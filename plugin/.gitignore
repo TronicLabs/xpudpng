@@ -1,0 +1,9 @@
+*.o
+xpudpng.xpl
+config_build.h
+config.log
+config
+SDK
+Makefile.config
+.depend
+configure.lua

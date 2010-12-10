@@ -1,0 +1,88 @@
+# This is a BSDBuild configure script source. The ./configure script is
+# generated from this file via mkconfigure(1). For more information, see:
+# http://bsdbuild.hypertriton.com/.
+
+REGISTER("--enable-debug",		"General debugging. Deactivated by default."		)
+REGISTER("--with_xpsdk",		"Where is the X-Plane SDK includes. Required!"		)
+
+# Name and version
+PACKAGE("xpudpng")
+VERSION("0.1")
+#RELEASE("")
+
+# Check for a C compiler. If one exists, ${HAVE_CC} will be set
+CHECK(cc)
+
+if [ "`uname -s `" = "Linux" ]; then
+#       REQUIRE(libbsd)
+        C_DEFINE(APL=0)
+        C_DEFINE(LIN=1)
+        C_DEFINE(IBM=0)
+
+        echo "*** WARNING"
+        echo "*** This plugin hasn't been tested under Linux nor compiled !"
+        echo "*** Contact me if you have dont this."
+        exit 1
+elif [ "`uname -s `" = "Darwin" ]; then
+        OSX_ARCHS="-arch i386 -arch ppc"
+        C_DEFINE(APL=1)
+        C_DEFINE(LIN=0)
+        C_DEFINE(IBM=0)
+        C_OPTION(${OSX_ARCHS})
+
+        LD_OPTION(-dynamiclib ${OSX_ARCHS} -mmacosx-version-min=10.4 -flat_namespace -undefined warning)
+        MDEFINE(XPLANE_PLUGIN_ARCHS, ${OSX_ARCHS})
+elif [ "`uname -s `" = "Window" ]; then
+        C_DEFINE(APL=0)
+        C_DEFINE(LIN=0)
+        C_DEFINE(IBM=1)
+        echo "*** WARNING"
+        echo "*** This plugin hasn't been tested under Window nor compiled !"
+        echo "*** Contact me if you have done this."
+        exit 1
+fi
+
+C_INCLUDE_CONFIG(config_build.h)
+
+MAIL_CONTACT="rhaamo@gruik.at"
+
+### OPTIONS ###
+if [ "${enable_debug}" = "yes" ]; then
+	HDEFINE(XPUDPNG_DEBUG, "yes")
+	C_OPTION(-g)
+	C_OPTION(-ggdb3)
+	C_OPTION(-fno-inline)
+    # add some more warning flags
+	C_OPTION(-Wall -Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith -Wno-sign-compare -Werror)
+	want_debug=yes
+else
+	HUNDEF(XPUDPNG_DEBUG)
+	want_debug=no
+fi
+
+if [ -n "${with_xpsdk}" ]; then
+	MDEFINE(XPLANE_SDK_INCLUDES, ${with_xpsdk})
+else
+        if [ -e "${HOME}/SDK" ]; then
+                MDEFINE(XPLANE_SDK_INCLUDES, "${HOME}/SDK")
+        else
+                echo "*** ERROR"
+                echo "*** A path to the X-Plane SDK is required."
+                echo "*** Use --with-xpsdk=/path/to/the/includes"
+                echo "*** Or put the SDK content in ~/SDK"
+                exit 1
+        fi
+fi
+
+ARCH=`uname -s`
+echo
+echo "Building ${PACKAGE}-${VERSION} on ${ARCH}"
+echo "      Prefix: ${PREFIX}"
+echo "          CC: ${CC}"
+echo
+echo "Build with:"
+echo "      Program name: xpudpng.xpl"
+echo "      Debug:        ${want_debug}"
+echo "      Path to SDK:  ${XPLANE_SDK_INCLUDES}"
+echo "* Configuration successful."
+echo "* Use \"make\" and \"make install\" to build and install ${PACKAGE}"
