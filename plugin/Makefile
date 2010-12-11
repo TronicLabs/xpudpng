@@ -10,7 +10,8 @@ CFLAGS+=	-fPIC -DXPLM200=1 \
 		-Wall -Wno-sign-compare -Wno-unknown-pragmas \
 		-I${PREFIX}/include \
 		-I${XPLANE_SDK_INCLUDES}/CHeaders/XPLM \
-		-I${XPLANE_SDK_INCLUDES}/CHeaders/Widgets
+		-I${XPLANE_SDK_INCLUDES}/CHeaders/Widgets \
+		-I${TOP}/../headers
 
 LDFLAGS+=	-shared -static-libgcc -fPIC
 
