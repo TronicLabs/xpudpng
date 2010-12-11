@@ -1712,8 +1712,8 @@ echo "CC=$CC" >>Makefile.config
 echo "mdefs[\"CC\"] = \"$CC\"" >>configure.lua
 echo "CFLAGS=$CFLAGS" >>Makefile.config
 echo "mdefs[\"CFLAGS\"] = \"$CFLAGS\"" >>configure.lua
-if [ "`uname -s `" = "Linux" ]
- then
+case `uname -s` in
+     Linux)
 CFLAGS="$CFLAGS -DAPL=0"
 CXXFLAGS="$CXXFLAGS -DAPL=0"
 echo "CFLAGS=$CFLAGS" >>Makefile.config
@@ -1736,8 +1736,8 @@ echo "mdefs[\"CXXFLAGS\"] = \"$CXXFLAGS\"" >>configure.lua
         echo "*** This plugin hasn't been tested under Linux nor compiled !"
         echo "*** Contact me if you have dont this."
         exit 1
-elif [ "`uname -s `" = "Darwin" ]
- then
+        ;;
+     Darwin)
         OSX_ARCHS="-arch i386 -arch ppc"
 CFLAGS="$CFLAGS -DAPL=1"
 CXXFLAGS="$CXXFLAGS -DAPL=1"
@@ -1769,8 +1769,8 @@ echo "mdefs[\"LDFLAGS\"] = \"$LDFLAGS\"" >>configure.lua
 XPLANE_PLUGIN_ARCHS="${OSX_ARCHS}"
 echo "XPLANE_PLUGIN_ARCHS=$XPLANE_PLUGIN_ARCHS" >>Makefile.config
 echo "mdefs[\"XPLANE_PLUGIN_ARCHS\"] = \"$XPLANE_PLUGIN_ARCHS\"" >>configure.lua
-elif [ "`uname -s `" = "Window" ]
- then
+        ;;
+     Window)
 CFLAGS="$CFLAGS -DAPL=0"
 CXXFLAGS="$CXXFLAGS -DAPL=0"
 echo "CFLAGS=$CFLAGS" >>Makefile.config
@@ -1793,7 +1793,8 @@ echo "mdefs[\"CXXFLAGS\"] = \"$CXXFLAGS\"" >>configure.lua
         echo "*** This plugin hasn't been tested under Window nor compiled !"
         echo "*** Contact me if you have done this."
         exit 1
-fi
+        ;;
+esac
 MAIL_CONTACT="rhaamo@gruik.at"
 if [ "${enable_debug}" = "yes" ]
  then

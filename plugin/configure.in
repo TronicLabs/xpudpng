@@ -13,7 +13,8 @@ VERSION("0.1")
 # Check for a C compiler. If one exists, ${HAVE_CC} will be set
 CHECK(cc)
 
-if [ "`uname -s `" = "Linux" ]; then
+case `uname -s` in
+     Linux)
 #       REQUIRE(libbsd)
         C_DEFINE(APL=0)
         C_DEFINE(LIN=1)
@@ -23,7 +24,9 @@ if [ "`uname -s `" = "Linux" ]; then
         echo "*** This plugin hasn't been tested under Linux nor compiled !"
         echo "*** Contact me if you have dont this."
         exit 1
-elif [ "`uname -s `" = "Darwin" ]; then
+        ;;
+
+     Darwin)
         OSX_ARCHS="-arch i386 -arch ppc"
         C_DEFINE(APL=1)
         C_DEFINE(LIN=0)
@@ -32,7 +35,8 @@ elif [ "`uname -s `" = "Darwin" ]; then
 
         LD_OPTION(-dynamiclib ${OSX_ARCHS} -mmacosx-version-min=10.4 -flat_namespace -undefined warning)
         MDEFINE(XPLANE_PLUGIN_ARCHS, ${OSX_ARCHS})
-elif [ "`uname -s `" = "Window" ]; then
+        ;;
+     Window)
         C_DEFINE(APL=0)
         C_DEFINE(LIN=0)
         C_DEFINE(IBM=1)
@@ -40,7 +44,8 @@ elif [ "`uname -s `" = "Window" ]; then
         echo "*** This plugin hasn't been tested under Window nor compiled !"
         echo "*** Contact me if you have done this."
         exit 1
-fi
+        ;;
+esac
 
 C_INCLUDE_CONFIG(config_build.h)
 
